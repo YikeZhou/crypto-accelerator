@@ -88,10 +88,10 @@ class CompressionFunction extends Module {
 
         val S1 = RotateRight(e, 6) ^ RotateRight(e, 11) ^ RotateRight(e, 25)
         val ch = (e & f) ^ ((~e).asUInt & g)
-        val temp1 = h + S1 + ch + Constants.roundConstants()(cur_i) + messageScheduleArray.io.wOut
+        val temp1 = (h + S1 + ch + Constants.roundConstants()(cur_i) + messageScheduleArray.io.wOut)(31, 0)
         val S0 = RotateRight(a, 2) ^ RotateRight(a, 13) ^ RotateRight(a, 22)
         val maj = (a & b) ^ (a & c) ^ (b & c)
-        val temp2 = S0 + maj
+        val temp2 = (S0 + maj)(31, 0)
 
         h := g
         g := f
@@ -107,23 +107,23 @@ class CompressionFunction extends Module {
         when (i === 63.U) {
             valid := true.B
 
-            a := temp1 + temp2 + hash_val(0)
-            b := a + hash_val(1)
-            c := b + hash_val(2)
-            d := c + hash_val(3)
-            e := d + temp1 + hash_val(4)
-            f := e + hash_val(5)
-            g := f + hash_val(6)
-            h := g + hash_val(7)
+            a := (temp1 + temp2 + hash_val(0))(31, 0)
+            b := (a + hash_val(1))(31, 0)
+            c := (b + hash_val(2))(31, 0)
+            d := (c + hash_val(3))(31, 0)
+            e := (d + temp1 + hash_val(4))(31, 0)
+            f := (e + hash_val(5))(31, 0)
+            g := (f + hash_val(6))(31, 0)
+            h := (g + hash_val(7))(31, 0)
 
-            hash_val(0) := hash_val(0) + temp1 + temp2
-            hash_val(1) := hash_val(1) + a
-            hash_val(2) := hash_val(2) + b
-            hash_val(3) := hash_val(3) + c
-            hash_val(4) := hash_val(4) + d + temp1
-            hash_val(5) := hash_val(5) + e
-            hash_val(6) := hash_val(6) + f
-            hash_val(7) := hash_val(7) + g
+            hash_val(0) := (hash_val(0) + temp1 + temp2)(31, 0)
+            hash_val(1) := (hash_val(1) + a)(31, 0)
+            hash_val(2) := (hash_val(2) + b)(31, 0)
+            hash_val(3) := (hash_val(3) + c)(31, 0)
+            hash_val(4) := (hash_val(4) + d + temp1)(31, 0)
+            hash_val(5) := (hash_val(5) + e)(31, 0)
+            hash_val(6) := (hash_val(6) + f)(31, 0)
+            hash_val(7) := (hash_val(7) + g)(31, 0)
 
         } .otherwise {
             valid := false.B
